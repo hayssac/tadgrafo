@@ -17,13 +17,13 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     
     /**
      *
-     * @param Vertice
+     * @param vertice
      */
     @Override
-    public void inserirVertice(Vertices Vertice){
+    public void inserirVertice(Vertices vertice){
         qtdVertices = qtdVertices++; // aumenta a informação de vértices no grafo
-        Vertice.setChave(qtdVertices); // o índice desse vértice será o número atual de vértices
-        vertices.add(Vertice); // adiciona o vértice na lista de grafo
+        vertice.setChave(qtdVertices); // o índice desse vértice será o número atual de vértices
+        vertices.add(vertice); // adiciona o vértice na lista de grafo
         ArrayList matrizAdj[][] = new ArrayList[qtdVertices][qtdVertices]; //cria a matriz de adjacência QUADRADA
     }
         
@@ -59,12 +59,12 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      * @param verticeUm
      * @param verticeDois
      * @param valor
-     * @param eDirecionado
+     * @param ehDirecionado
      * @return
      */
     @Override
-    public Arestas insereArco(Vertices verticeUm, Vertices verticeDois, double valor, boolean eDirecionado){
-        Arestas A=new Arestas(verticeUm, verticeDois, valor, eDirecionado);         
+    public Arestas insereArco(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado){
+        Arestas A=new Arestas(verticeUm, verticeDois, valor, ehDirecionado);         
         int ind1=achaÍndice(verticeUm.getChave());
         int ind2=achaÍndice(verticeDois.getChave());
         
@@ -80,11 +80,25 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      *
      * @param verticeUm
      * @param verticeDois
-     * @param eDirecionado
+     * @param ehDirecionado
      * @return
      */
-    public Arestas insereArco(Vertices verticeUm, Vertices verticeDois, boolean eDirecionado){
-        return insereArco(verticeUm, verticeDois, 0, eDirecionado);
+    @Override
+    public Arestas insereArcoSemValor(Vertices verticeUm, Vertices verticeDois, boolean ehDirecionado){
+        return insereArco(verticeUm, verticeDois, 0, ehDirecionado);
+    }
+    
+    /**
+     *
+     * @param verticeUm
+     * @param verticeDois
+     * @param valor
+     * @return
+     */
+    @Override
+    public Arestas insereArcoSemDirecao (Vertices verticeUm, Vertices verticeDois, double valor) {
+        return insereArco(verticeUm, verticeDois, valor, false);
+    
     }
     
     /**
@@ -123,7 +137,8 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      */
     @Override
     public int grau(Vertices Vertice){
-        // o grau é a quantidade de 1 na coluna que representa o vértice        
+        // o grau é o contador da quantidade de valores diferentes de 0 na coluna que representa o vértice        
+        
     }
     
     /**
@@ -158,14 +173,14 @@ public class TADGrafoCompleto extends InterfaceGrafo {
 
     @Override
     public ArrayList arestas(){
-        
-        // refazer
-        
-//        ArrayList v=new ArrayList();
-//        for(int l=0;l<qtdVertices;l++)
-//            for(int c=0;c<qtdVertices;c++)                
-//                v.add(matrizAdj[l][c]);
-//        return v;
+
+    // vai sair arrays dentro de arrays
+
+    ArrayList v=new ArrayList();
+    for(int l=0;l<qtdVertices;l++)
+        for(int c=0;c<qtdVertices;c++)                
+            v.add(matrizAdj[l][c]);
+    return v;
     }
     
     @Override
@@ -195,7 +210,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      * @return
      */
     @Override
-    public boolean éAdjacente(Vertices v, Vertices w){
+    public boolean ehAdjacente(Vertices v, Vertices w){
         int ind1=achaÍndice(v.getChave());
         int ind2=achaÍndice(w.getChave());
         return (matrizAdj[ind1][ind2])!=null;

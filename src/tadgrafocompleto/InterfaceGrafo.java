@@ -18,6 +18,10 @@ public abstract class InterfaceGrafo {
     public abstract Arestas insereArco(Vertices VerticeUm, Vertices VerticeDois,
             double valor, boolean eDirecionado);
 
+    public abstract Arestas insereArcoSemValor(Vertices verticeUm, Vertices verticeDois, boolean eDirecionado);
+    
+    public abstract Arestas insereArcoSemValor (Vertices verticeUm, Vertices verticeDois, double valor);    
+
     public abstract void removeArco(Arestas Aresta);
 
     public abstract int grau(Vertices Vertice);
@@ -32,6 +36,6 @@ public abstract class InterfaceGrafo {
 
     public abstract ArrayList finalVertices(Arestas a);
 
-    public abstract boolean éAdjacente(Vertices v, Vertices w);
+    public abstract boolean ehAdjacente(Vertices v, Vertices w);
     
 }
