@@ -105,18 +105,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         grupoArestas.add(A); // grafo orientado
         return A;
     }
-
-    /**
-     *
-     * @param verticeUm
-     * @param verticeDois
-     * @param ehDirecionado
-     * @return
-     */
-    @Override
-    public Arestas insereArcoSemValor(Vertices verticeUm, Vertices verticeDois, boolean ehDirecionado){
-        return insereArco(verticeUm, verticeDois, 0, ehDirecionado);
-    }
     
     /**
      *
@@ -133,17 +121,23 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     
     /**
      *
-     * @param aresta
+     * @param vert1
+     * @param vert2
+     * @param chave
      */
     @Override
-    public void removeArco(Arestas aresta){   // grafo orientado     
-        Vertices vert1 = aresta.getVerticeOrigem();
-        Vertices vert2 = aresta.getVerticeDestino();
+    public void removeArco(Vertices vert1, Vertices vert2, int chave){   // grafo orientado     
         int ind1 = achaIndice(vert1.getChave());
         int ind2 = achaIndice(vert2.getChave());
         
         ArrayList grupoArestas = matrizAdj[ind1][ind2];
-        grupoArestas.remove(aresta);
+        Arestas arestaEncontrada = getAresta(vert1, vert2, chave);
+        if(arestaEncontrada == null){
+            out.println("Aresta no valor "+chave+" não encontrada entre os vertices "+vert1+" e "+vert2+"!");
+        } else {
+            grupoArestas.remove(arestaEncontrada);
+        }
+        
     }
     
     public void mostraVertices(){
@@ -170,12 +164,19 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         // o grau é o contador da quantidade de valores diferentes de 0 na linha que representa o vértice
         int indiceDoVertice = achaIndice(vertice.getChave());
         int grauDoVertice = 0;
-        ArrayList vazia = new ArrayList();
-        for (int g = 0; g < qtdVertices; g++) {
-            if ( matrizAdj[indiceDoVertice][g] != vazia ) {
-                grauDoVertice = grauDoVertice++;
+        
+        for (int l = 0; l < qtdVertices; l++) {
+            if ( matrizAdj[l][indiceDoVertice] != null ) {
+                grauDoVertice += matrizAdj[l][indiceDoVertice].size();
             }
         }
+        
+        for(int c = 0; c < qtdVertices; c++){
+            if ( matrizAdj[indiceDoVertice][c] != null ) {
+                grauDoVertice += matrizAdj[indiceDoVertice][c].size();
+            }
+        }
+//        out.println(grauDoVertice);
         return grauDoVertice;
     }
     
@@ -225,18 +226,15 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     }
     
     @Override
-    public ArrayList arestasIncidentes(Vertices vertice){
+    public void arestasIncidentes(Vertices vertice){
         // as arestas incidentes é representada pelo contador 
         // de valores diferentes de zero na linha que representa o vértice
         int indiceDoVertice = achaIndice(vertice.getChave());
-        ArrayList vazia = new ArrayList();
-        ArrayList arestasIncidentes = new ArrayList();
         for (int g = 0; g < qtdVertices; g++) {
-            if ( matrizAdj[indiceDoVertice][g] != vazia ) {
-                arestasIncidentes.add(matrizAdj[indiceDoVertice][g]);
+            if ( matrizAdj[indiceDoVertice][g] != null ) {
+                out.println(matrizAdj[indiceDoVertice][g]);
             }
         }
-        return arestasIncidentes;
     }
     
     /**
@@ -267,15 +265,50 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         
     }
     
-    public ArrayList getAresta(Vertices v, Vertices w){
+    public Arestas getAresta(Vertices v, Vertices w, int chave){
         int ind1=achaIndice(v.getChave());
         int ind2=achaIndice(w.getChave());
-        ArrayList grupoArestas = matrizAdj[ind1][ind2];
+        ArrayList<Arestas> grupoArestas = matrizAdj[ind1][ind2];
         //nesse caso, como agora o grupo de arestas é representado em um arrayList
         //uma vez que possa existir arestas paralelas,
         //o retorno deve ser uma ArrayList
         //se vier vazia, significa que não tem nenhuma aresta entre os vértices
-        return grupoArestas;
+        if(grupoArestas == null){
+            return null;
+        } else {
+            int tamanho = grupoArestas.size(), cont = 0;
+            while(tamanho>0){
+                if(grupoArestas.get(cont).getValor() == chave){
+                    return grupoArestas.get(cont);
+                }
+                cont++;
+                tamanho--;
+            }
+            return null;
+        }
+        
+    }
+    
+    public boolean verificarCaminhoEuleriano(){
+        int tam = qtdVertices, cont = 0, impares = 0;
+        while(tam!=0){
+            int grau = grau(vertices.get(cont));
+            out.println(grau);
+            if(grau%2!=0){
+                impares++;
+//                out.println("s");
+            }
+            cont++;
+            tam--;
+        }
+        
+        if(impares>2){
+            out.println("Não existe caminhos eulerianos!!!");
+            return false;
+        } else {
+            out.println("Existe caminhos eulerianos!!!");
+            return true;
+        }
     }
     
     public static void main(String[] args) {
@@ -309,12 +342,23 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         
         grafo.insereArco(a, b, 500, true);
         grafo.insereArcoSemDirecao(b, c, 200);
-        grafo.insereArcoSemValor(c, d, true);
-        grafo.insereArco(e, d, 200, true);
-        grafo.insereArcoSemValor(e, a, false);
-        
+        grafo.insereArco(c, a, 7, true);
+        grafo.insereArco(b, d, 27, true);
+//        grafo.insereArco(c, e, 200, true);
+//        grafo.insereArco(e, a, 12, false);
+//        grafo.insereArco(e, a, 14, false);
+//        grafo.insereArco(b, e, 14, false);
+//        grafo.insereArco(a, c, 14, false);
+//        grafo.removerVertice(e);
+//        grafo.removeArco(a,b,200);
+//        out.println(grafo.grau(e));
+//        grafo.arestasIncidentes(e);
+//        grafo.arestas();
+//        out.println(grafo.finalVertices(grafo.getAresta(a, b, 500)));
+//        out.println(grafo.ehAdjacente(a, c));
+
         System.out.println(grafo.arestas());
-        grafo.arestas();
+        grafo.verificarCaminhoEuleriano();
         
     }
     

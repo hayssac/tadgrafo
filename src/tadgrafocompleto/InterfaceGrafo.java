@@ -11,31 +11,29 @@ public abstract class InterfaceGrafo {
     //private Vector vertices;
     //private Arestas matrizAdj[][];
     //public GrafoSimples()
-    public abstract void inserirVertice(Vertices Vertice);
+    public abstract void inserirVertice(Vertices Vertice); // Ok
 
-    public abstract void removerVertice(Vertices Vertice);
+    public abstract void removerVertice(Vertices Vertice); // Ok
 
     public abstract Arestas insereArco(Vertices VerticeUm, Vertices VerticeDois,
-            double valor, boolean eDirecionado);
-
-    public abstract Arestas insereArcoSemValor(Vertices verticeUm, Vertices verticeDois, boolean ehDirecionado);
+            double valor, boolean eDirecionado); // Ok
     
-    public abstract Arestas insereArcoSemDirecao (Vertices verticeUm, Vertices verticeDois, double valor);    
+    public abstract Arestas insereArcoSemDirecao (Vertices verticeUm, Vertices verticeDois, double valor); // Ok 
 
-    public abstract void removeArco(Arestas Aresta);
+    public abstract void removeArco(Vertices vert1, Vertices vert2, int chave); // Ok
 
-    public abstract int grau(Vertices Vertice);
+    public abstract int grau(Vertices Vertice); // Ok
 
-    public abstract int ordem();
+    public abstract int ordem(); // Ok
 
-    public abstract ArrayList vertices();
+    public abstract ArrayList vertices(); // Ok
 
-    public abstract ArrayList arestas();
+    public abstract ArrayList arestas(); // Ok
 
-    public abstract ArrayList arestasIncidentes(Vertices vertice);
+    public abstract void arestasIncidentes(Vertices vertice); // Ok
 
-    public abstract ArrayList finalVertices(Arestas a);
+    public abstract ArrayList finalVertices(Arestas a); // Ok
 
-    public abstract boolean ehAdjacente(Vertices v, Vertices w);
+    public abstract boolean ehAdjacente(Vertices v, Vertices w); // Ok
     
 }
