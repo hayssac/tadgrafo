@@ -4,15 +4,17 @@ package tadgrafocompleto;
  *
  * @author hayhack
  */
+import static java.lang.System.out;
 import java.util.*;
 
 public class TADGrafoCompleto extends InterfaceGrafo {
     private int qtdVertices;
-    private final ArrayList vertices;
-    public ArrayList matrizAdj[][];
+    private final ArrayList<Vertices> vertices;
+    public ArrayList<Arestas> matrizAdj[][] = null;
     public TADGrafoCompleto(){
         qtdVertices=0;
         vertices=new ArrayList();
+        
     }
     /**
      * ATENÇÃO: A CHAVE É A INFORMAÇÃO DO VÉRTICE O VALOR É QUALQUER COISA Q SEI LÁ
@@ -31,7 +33,19 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         
         if(matrizAdj==null)
         {
+//            out.println(qtdVertices);
             matrizAdj = new ArrayList[qtdVertices][qtdVertices];
+//            matrizAdj[0][1] = new ArrayList();
+//            out.println(matrizAdj[0][1]);
+        } else {
+            ArrayList tempMatrizAdj[][]=new ArrayList[qtdVertices][qtdVertices];
+            int l, c;
+            for(l = 0; l < qtdVertices-1; l++){
+                for(c = 0; c < qtdVertices-1; c++){
+                    tempMatrizAdj[l][c] = matrizAdj[l][c];
+                }
+            }
+            matrizAdj = tempMatrizAdj;
         }
         
         vertices.add(vertice);
@@ -73,14 +87,20 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      * @return
      */
     @Override
-    public Arestas insereArco(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado){        
+    public Arestas insereArco(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado){     
+//        out.println(verticeUm + " " + verticeDois + " " + valor + " " + ehDirecionado);
         Arestas A=new Arestas(verticeUm, verticeDois, valor, ehDirecionado);         
         
+//        out.println(verticeUm.getChave());
         int ind1=achaIndice(verticeUm.getChave());
         int ind2=achaIndice(verticeDois.getChave());
         
         // consulta a arrayList referente ao nó início e fim
-        ArrayList grupoArestas = matrizAdj[ind1][ind2];
+        
+        matrizAdj[ind1][ind2] = new ArrayList<>();
+//        out.println(matrizAdj[ind1][ind2]);
+        ArrayList<Arestas> grupoArestas = matrizAdj[ind1][ind2];
+        
         // adiciona na lista desse nó o número de vértices
         grupoArestas.add(A); // grafo orientado
         return A;
@@ -171,10 +191,13 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     private int achaIndice(int chave){
         Iterator I=vertices.iterator();
         int ind=0;        
-        while(I.hasNext()){     
-            Vertices v=(Vertices)(I.next());            
-            if(v.getChave()==chave)// achei
+        while(I.hasNext()){
+            Vertices v=(Vertices)(I.next());   
+            
+            if(v.getChave()== chave){// achei
+//                out.println(ind);
                 return ind;
+            }
             ind++;
         }
         return -1; // nao achei
@@ -276,20 +299,22 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         System.out.println(grafo.vertices());   
         grafo.mostraVertices();
         System.out.println(grafo.ordem());
-        System.out.println(grafo.achaIndice(a.getChave()));
-        System.out.println(grafo.achaIndice(b.getChave()));
-        System.out.println(grafo.achaIndice(c.getChave()));
-        System.out.println(grafo.achaIndice(d.getChave()));
-        System.out.println(grafo.achaIndice(e.getChave()));
-        
-        
-        
-//        grafo.insereArco(a, b, 500, true);
-//        grafo.insereArcoSemDirecao(b, c, 200);
-//        grafo.insereArcoSemValor(c, d, true);
-//        grafo.insereArco(e, d, 200, true);
-//        grafo.insereArcoSemValor(e, a, false);
+//        System.out.println(grafo.achaIndice(a.getChave()));
+//        System.out.println(grafo.achaIndice(b.getChave()));
+//        System.out.println(grafo.achaIndice(c.getChave()));
+//        System.out.println(grafo.achaIndice(d.getChave()));
+//        System.out.println(grafo.achaIndice(e.getChave()));
 //        
+        
+        
+        grafo.insereArco(a, b, 500, true);
+        grafo.insereArcoSemDirecao(b, c, 200);
+        grafo.insereArcoSemValor(c, d, true);
+        grafo.insereArco(e, d, 200, true);
+        grafo.insereArcoSemValor(e, a, false);
+        
+        System.out.println(grafo.arestas());
+        grafo.arestas();
         
     }
     
