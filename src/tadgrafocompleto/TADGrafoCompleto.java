@@ -9,11 +9,14 @@ import java.util.*;
 public class TADGrafoCompleto extends InterfaceGrafo {
     private int qtdVertices;
     private final ArrayList vertices;
-    private ArrayList matrizAdj[][];
+    public ArrayList matrizAdj[][];
     public TADGrafoCompleto(){
         qtdVertices=0;
-        vertices=new ArrayList();        
+        vertices=new ArrayList();
     }
+    /**
+     * ATENÇÃO: A CHAVE É A INFORMAÇÃO DO VÉRTICE O VALOR É QUALQUER COISA Q SEI LÁ
+     */
     
     /**
      *
@@ -21,11 +24,18 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      */
     @Override
     public void inserirVertice(Vertices vertice){
-        qtdVertices = qtdVertices++; // aumenta a informação de vértices no grafo
-        vertice.setChave(qtdVertices); // o índice desse vértice será o número atual de vértices
-        vertices.add(vertice); // adiciona o vértice na lista de grafo
-        ArrayList matrizAdj[][] = new ArrayList[qtdVertices][qtdVertices]; //cria a matriz de adjacência QUADRADA
-    }
+        // aumenta a quantidade de vértices
+        // o índice do vértice é representado pelo atributo 'chave' do vértice
+        // adiciona o vértice na lista de vértices do grafo
+        qtdVertices++;
+        
+        if(matrizAdj==null)
+        {
+            matrizAdj = new ArrayList[qtdVertices][qtdVertices];
+        }
+        
+        vertices.add(vertice);
+     }
         
     /**
      *
@@ -34,7 +44,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     @Override
     public void removerVertice(Vertices vertice){        
         qtdVertices--;
-        int indice=achaÍndice(vertice.getChave());
+        int indice=achaIndice(vertice.getChave());
         vertices.remove(indice);  // remove o vértice do vector    
         // remove linhas e colunas da matriz de adjacência
         ArrayList tempMatrizAdj[][]=new ArrayList[qtdVertices][qtdVertices];
@@ -63,11 +73,11 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      * @return
      */
     @Override
-    public Arestas insereArco(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado){
+    public Arestas insereArco(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado){        
         Arestas A=new Arestas(verticeUm, verticeDois, valor, ehDirecionado);         
-        int ind1=achaÍndice(verticeUm.getChave());
-        int ind2=achaÍndice(verticeDois.getChave());
         
+        int ind1=achaIndice(verticeUm.getChave());
+        int ind2=achaIndice(verticeDois.getChave());
         
         // consulta a arrayList referente ao nó início e fim
         ArrayList grupoArestas = matrizAdj[ind1][ind2];
@@ -109,8 +119,8 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     public void removeArco(Arestas aresta){   // grafo orientado     
         Vertices vert1 = aresta.getVerticeOrigem();
         Vertices vert2 = aresta.getVerticeDestino();
-        int ind1 = achaÍndice(vert1.getChave());
-        int ind2 = achaÍndice(vert2.getChave());
+        int ind1 = achaIndice(vert1.getChave());
+        int ind2 = achaIndice(vert2.getChave());
         
         ArrayList grupoArestas = matrizAdj[ind1][ind2];
         grupoArestas.remove(aresta);
@@ -132,13 +142,21 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     
     /**
      *
-     * @param Vertice
+     * @param vertice
      * @return
      */
     @Override
-    public int grau(Vertices Vertice){
-        // o grau é o contador da quantidade de valores diferentes de 0 na coluna que representa o vértice        
-        
+    public int grau(Vertices vertice){
+        // o grau é o contador da quantidade de valores diferentes de 0 na linha que representa o vértice
+        int indiceDoVertice = achaIndice(vertice.getChave());
+        int grauDoVertice = 0;
+        ArrayList vazia = new ArrayList();
+        for (int g = 0; g < qtdVertices; g++) {
+            if ( matrizAdj[indiceDoVertice][g] != vazia ) {
+                grauDoVertice = grauDoVertice++;
+            }
+        }
+        return grauDoVertice;
     }
     
     /**
@@ -150,7 +168,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         return qtdVertices;
     }
     
-    private int achaÍndice(int chave){
+    private int achaIndice(int chave){
         Iterator I=vertices.iterator();
         int ind=0;        
         while(I.hasNext()){     
@@ -185,9 +203,17 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     
     @Override
     public ArrayList arestasIncidentes(Vertices vertice){
-        // a quantidade de arestas incidentes é representada pelo contador 
-        // de valores diferentes de zero na linha que representa o vértice        
-
+        // as arestas incidentes é representada pelo contador 
+        // de valores diferentes de zero na linha que representa o vértice
+        int indiceDoVertice = achaIndice(vertice.getChave());
+        ArrayList vazia = new ArrayList();
+        ArrayList arestasIncidentes = new ArrayList();
+        for (int g = 0; g < qtdVertices; g++) {
+            if ( matrizAdj[indiceDoVertice][g] != vazia ) {
+                arestasIncidentes.add(matrizAdj[indiceDoVertice][g]);
+            }
+        }
+        return arestasIncidentes;
     }
     
     /**
@@ -211,25 +237,60 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      */
     @Override
     public boolean ehAdjacente(Vertices v, Vertices w){
-        int ind1=achaÍndice(v.getChave());
-        int ind2=achaÍndice(w.getChave());
-        return (matrizAdj[ind1][ind2])!=null;
+        int ind1=achaIndice(v.getChave());
+        int ind2=achaIndice(w.getChave());
+        return (matrizAdj[ind1][ind2])!= null;
+        //se retornar null, significa que os vértices não são adjacentes um ao outro
         
     }
     
     public ArrayList getAresta(Vertices v, Vertices w){
-        int ind1=achaÍndice(v.getChave());
-        int ind2=achaÍndice(w.getChave());
+        int ind1=achaIndice(v.getChave());
+        int ind2=achaIndice(w.getChave());
         ArrayList grupoArestas = matrizAdj[ind1][ind2];
         //nesse caso, como agora o grupo de arestas é representado em um arrayList
         //uma vez que possa existir arestas paralelas,
         //o retorno deve ser uma ArrayList
-        
+        //se vier vazia, significa que não tem nenhuma aresta entre os vértices
         return grupoArestas;
     }
     
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        
+        Vertices a = new Vertices(55, 0);
+        Vertices b = new Vertices(44, 0);
+        Vertices c = new Vertices(33, 0);
+        Vertices d = new Vertices(22, 0);
+        Vertices e = new Vertices(11, 0);
+        
+        TADGrafoCompleto grafo = new TADGrafoCompleto();
+        
+        grafo.inserirVertice(a);
+        grafo.inserirVertice(b);
+        grafo.inserirVertice(c);
+        grafo.inserirVertice(d);
+        grafo.inserirVertice(e);
+        
+        
+        System.out.println(grafo.vertices());   
+        grafo.mostraVertices();
+        System.out.println(grafo.ordem());
+        System.out.println(grafo.achaIndice(a.getChave()));
+        System.out.println(grafo.achaIndice(b.getChave()));
+        System.out.println(grafo.achaIndice(c.getChave()));
+        System.out.println(grafo.achaIndice(d.getChave()));
+        System.out.println(grafo.achaIndice(e.getChave()));
+        
+        
+        
+//        grafo.insereArco(a, b, 500, true);
+//        grafo.insereArcoSemDirecao(b, c, 200);
+//        grafo.insereArcoSemValor(c, d, true);
+//        grafo.insereArco(e, d, 200, true);
+//        grafo.insereArcoSemValor(e, a, false);
+//        
+        
     }
     
 }

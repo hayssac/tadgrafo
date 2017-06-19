@@ -18,9 +18,9 @@ public abstract class InterfaceGrafo {
     public abstract Arestas insereArco(Vertices VerticeUm, Vertices VerticeDois,
             double valor, boolean eDirecionado);
 
-    public abstract Arestas insereArcoSemValor(Vertices verticeUm, Vertices verticeDois, boolean eDirecionado);
+    public abstract Arestas insereArcoSemValor(Vertices verticeUm, Vertices verticeDois, boolean ehDirecionado);
     
-    public abstract Arestas insereArcoSemValor (Vertices verticeUm, Vertices verticeDois, double valor);    
+    public abstract Arestas insereArcoSemDirecao (Vertices verticeUm, Vertices verticeDois, double valor);    
 
     public abstract void removeArco(Arestas Aresta);
 
