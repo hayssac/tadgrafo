@@ -96,13 +96,19 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         int ind2=achaIndice(verticeDois.getChave());
         
         // consulta a arrayList referente ao nó início e fim
-        
-        matrizAdj[ind1][ind2] = new ArrayList<>();
+        if(matrizAdj[ind1][ind2]!=null){
+           matrizAdj[ind1][ind2].add(A);
+        } else {
+//            out.println("entrou no ==");
+            matrizAdj[ind1][ind2] = new ArrayList<>();
+            matrizAdj[ind1][ind2].add(A);
+//            out.println(matrizAdj[ind1][ind2]);
+        }
 //        out.println(matrizAdj[ind1][ind2]);
-        ArrayList<Arestas> grupoArestas = matrizAdj[ind1][ind2];
+//        ArrayList<Arestas> grupoArestas = matrizAdj[ind1][ind2];
         
         // adiciona na lista desse nó o número de vértices
-        grupoArestas.add(A); // grafo orientado
+//        grupoArestas.add(A); // grafo orientado
         return A;
     }
     
@@ -141,8 +147,9 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     }
     
     public void mostraVertices(){
-        for(int f=0;f<vertices.size();f++)
-            System.out.print(vertices.get(f)+",");        
+        for(int f=0;f<vertices.size();f++){
+            System.out.print(vertices.get(f)+",");  
+        }
     }
     
     public void mostraMatriz(){
@@ -317,16 +324,16 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         Vertices a = new Vertices(55, 0);
         Vertices b = new Vertices(44, 0);
         Vertices c = new Vertices(33, 0);
-        Vertices d = new Vertices(22, 0);
-        Vertices e = new Vertices(11, 0);
+//        Vertices d = new Vertices(22, 0);
+//        Vertices e = new Vertices(11, 0);
         
         TADGrafoCompleto grafo = new TADGrafoCompleto();
         
         grafo.inserirVertice(a);
         grafo.inserirVertice(b);
         grafo.inserirVertice(c);
-        grafo.inserirVertice(d);
-        grafo.inserirVertice(e);
+//        grafo.inserirVertice(d);
+//        grafo.inserirVertice(e);
         
         
         System.out.println(grafo.vertices());   
@@ -341,9 +348,12 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         
         
         grafo.insereArco(a, b, 500, true);
+        grafo.insereArco(a, b, 200, true);
+        grafo.insereArco(a, b, 76, true);
+        grafo.removeArco(a,b,500);
         grafo.insereArcoSemDirecao(b, c, 200);
         grafo.insereArco(c, a, 7, true);
-        grafo.insereArco(b, d, 27, true);
+//        grafo.insereArco(b, d, 27, true);
 //        grafo.insereArco(c, e, 200, true);
 //        grafo.insereArco(e, a, 12, false);
 //        grafo.insereArco(e, a, 14, false);
