@@ -26,17 +26,11 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      */
     @Override
     public void inserirVertice(Vertices vertice){
-        // aumenta a quantidade de vértices
-        // o índice do vértice é representado pelo atributo 'chave' do vértice
-        // adiciona o vértice na lista de vértices do grafo
         qtdVertices++;
         
         if(matrizAdj==null)
         {
-//            out.println(qtdVertices);
             matrizAdj = new ArrayList[qtdVertices][qtdVertices];
-//            matrizAdj[0][1] = new ArrayList();
-//            out.println(matrizAdj[0][1]);
         } else {
             ArrayList tempMatrizAdj[][]=new ArrayList[qtdVertices][qtdVertices];
             int l, c;
@@ -87,28 +81,21 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      * @return
      */
     @Override
-    public Arestas insereArco(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado){     
-//        out.println(verticeUm + " " + verticeDois + " " + valor + " " + ehDirecionado);
+    public Arestas insereAresta(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado) {
         Arestas A=new Arestas(verticeUm, verticeDois, valor, ehDirecionado);         
-        
-//        out.println(verticeUm.getChave());
+
         int ind1=achaIndice(verticeUm.getChave());
         int ind2=achaIndice(verticeDois.getChave());
         
         // consulta a arrayList referente ao nó início e fim
         if(matrizAdj[ind1][ind2]!=null){
-           matrizAdj[ind1][ind2].add(A);
+            matrizAdj[ind1][ind2].add(A);
         } else {
-//            out.println("entrou no ==");
             matrizAdj[ind1][ind2] = new ArrayList<>();
             matrizAdj[ind1][ind2].add(A);
 //            out.println(matrizAdj[ind1][ind2]);
         }
-//        out.println(matrizAdj[ind1][ind2]);
-//        ArrayList<Arestas> grupoArestas = matrizAdj[ind1][ind2];
-        
-        // adiciona na lista desse nó o número de vértices
-//        grupoArestas.add(A); // grafo orientado
+                
         return A;
     }
     
@@ -120,9 +107,21 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      * @return
      */
     @Override
-    public Arestas insereArcoSemDirecao (Vertices verticeUm, Vertices verticeDois, double valor) {
-        return insereArco(verticeUm, verticeDois, valor, false);
+    public Arestas insereArcoDirecionado(Vertices verticeUm, Vertices verticeDois, double valor){     
+        return insereAresta(verticeUm, verticeDois, valor, true);
+       
+    }
     
+    /**
+     *
+     * @param verticeUm
+     * @param verticeDois
+     * @param valor
+     * @return
+     */
+    @Override
+    public Arestas insereArcoNaoDirecionado (Vertices verticeUm, Vertices verticeDois, double valor) {
+        return insereAresta(verticeUm, verticeDois, valor, false);
     }
     
     /**
@@ -136,12 +135,16 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         int ind1 = achaIndice(vert1.getChave());
         int ind2 = achaIndice(vert2.getChave());
         
-        ArrayList grupoArestas = matrizAdj[ind1][ind2];
-        Arestas arestaEncontrada = getAresta(vert1, vert2, chave);
-        if(arestaEncontrada == null){
-            out.println("Aresta no valor "+chave+" não encontrada entre os vertices "+vert1+" e "+vert2+"!");
+        if (ind1 == -1 || ind2 == -1) {
+            return ;
         } else {
-            grupoArestas.remove(arestaEncontrada);
+            ArrayList grupoArestas = matrizAdj[ind1][ind2];
+            Arestas arestaEncontrada = getAresta(vert1, vert2, chave);
+            if(arestaEncontrada == null){
+                out.println("Aresta no valor "+chave+" não encontrada entre os vertices "+vert1+" e "+vert2+"!");
+            } else {
+                grupoArestas.remove(arestaEncontrada);
+            }            
         }
         
     }
@@ -222,20 +225,15 @@ public class TADGrafoCompleto extends InterfaceGrafo {
 
     @Override
     public ArrayList arestas(){
-
-    // vai sair arrays dentro de arrays
-
-    ArrayList v=new ArrayList();
-    for(int l=0;l<qtdVertices;l++)
-        for(int c=0;c<qtdVertices;c++)                
-            v.add(matrizAdj[l][c]);
-    return v;
+        ArrayList v=new ArrayList();
+        for(int l=0;l<qtdVertices;l++)
+            for(int c=0;c<qtdVertices;c++)                
+                v.add(matrizAdj[l][c]);
+        return v;
     }
     
     @Override
     public void arestasIncidentes(Vertices vertice){
-        // as arestas incidentes é representada pelo contador 
-        // de valores diferentes de zero na linha que representa o vértice
         int indiceDoVertice = achaIndice(vertice.getChave());
         for (int g = 0; g < qtdVertices; g++) {
             if ( matrizAdj[indiceDoVertice][g] != null ) {
@@ -268,7 +266,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         int ind1=achaIndice(v.getChave());
         int ind2=achaIndice(w.getChave());
         return (matrizAdj[ind1][ind2])!= null;
-        //se retornar null, significa que os vértices não são adjacentes um ao outro
         
     }
     
@@ -276,10 +273,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         int ind1=achaIndice(v.getChave());
         int ind2=achaIndice(w.getChave());
         ArrayList<Arestas> grupoArestas = matrizAdj[ind1][ind2];
-        //nesse caso, como agora o grupo de arestas é representado em um arrayList
-        //uma vez que possa existir arestas paralelas,
-        //o retorno deve ser uma ArrayList
-        //se vier vazia, significa que não tem nenhuma aresta entre os vértices
         if(grupoArestas == null){
             return null;
         } else {
@@ -303,7 +296,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
             out.println(grau);
             if(grau%2!=0){
                 impares++;
-//                out.println("s");
             }
             cont++;
             tam--;
@@ -324,7 +316,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         Vertices a = new Vertices(55, 0);
         Vertices b = new Vertices(44, 0);
         Vertices c = new Vertices(33, 0);
-//        Vertices d = new Vertices(22, 0);
+        Vertices d = new Vertices(22, 0);
 //        Vertices e = new Vertices(11, 0);
         
         TADGrafoCompleto grafo = new TADGrafoCompleto();
@@ -332,7 +324,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         grafo.inserirVertice(a);
         grafo.inserirVertice(b);
         grafo.inserirVertice(c);
-//        grafo.inserirVertice(d);
+        grafo.inserirVertice(d);
 //        grafo.inserirVertice(e);
         
         
@@ -346,19 +338,37 @@ public class TADGrafoCompleto extends InterfaceGrafo {
 //        System.out.println(grafo.achaIndice(e.getChave()));
 //        
         
+        grafo.insereArcoDirecionado(a, b, 500);
+        grafo.insereArcoNaoDirecionado(b, c, 200);
+        grafo.insereArcoDirecionado(c, a, 7);
+        grafo.insereArcoDirecionado(b, d, 27);
+//        grafo.insereArcoDirecionado(c, e, 200, true);
+//        grafo.insereArcoNaoDirecionado(e, a, 12);
+//        grafo.insereArcoNaoDirecionado(e, a, 14);
+//        grafo.insereArcoNaoDirecionado(b, e, 14);
+//        grafo.insereArcoNaoDirecionado(a, c, 14);
         
-        grafo.insereArco(a, b, 500, true);
-        grafo.insereArco(a, b, 200, true);
-        grafo.insereArco(a, b, 76, true);
-        grafo.removeArco(a,b,500);
-        grafo.insereArcoSemDirecao(b, c, 200);
-        grafo.insereArco(c, a, 7, true);
-//        grafo.insereArco(b, d, 27, true);
+//        grafo.insereAresta(a, b, 500, true);
+//        grafo.insereAresta(a, b, 200, true);
+//        grafo.insereAresta(a, b, 76, true);
+//        grafo.removeArco(a,b,500);
+//        grafo.insereArcoNaoDirecionado(b, c, 200);
+//        grafo.insereAresta(c, a, 7, true);
+//        grafo.insereAresta(b, d, 27, true);
 //        grafo.insereArco(c, e, 200, true);
 //        grafo.insereArco(e, a, 12, false);
 //        grafo.insereArco(e, a, 14, false);
 //        grafo.insereArco(b, e, 14, false);
-//        grafo.insereArco(a, c, 14, false);
+//        grafo.insereAresta(a, c, 14, false);
+//        grafo.insereArcoDirecionado(a, b, 500);
+//        grafo.insereArcoNaoDirecionado(b, c, 200);
+//        grafo.insereArcoDirecionado(c, a, 7);
+//        grafo.insereArcoDirecionado(b, d, 27);
+//        grafo.insereArcoDirecionado(c, e, 200, true);
+//        grafo.insereArcoNaoDirecionado(e, a, 12);
+//        grafo.insereArcoNaoDirecionado(e, a, 14);
+//        grafo.insereArcoNaoDirecionado(b, e, 14);
+//        grafo.insereArcoNaoDirecionado(a, c, 14);
 //        grafo.removerVertice(e);
 //        grafo.removeArco(a,b,200);
 //        out.println(grafo.grau(e));
@@ -371,5 +381,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         grafo.verificarCaminhoEuleriano();
         
     }
+  
     
 }

@@ -14,11 +14,13 @@ public abstract class InterfaceGrafo {
     public abstract void inserirVertice(Vertices Vertice); // Ok
 
     public abstract void removerVertice(Vertices Vertice); // Ok
-
-    public abstract Arestas insereArco(Vertices VerticeUm, Vertices VerticeDois,
-            double valor, boolean eDirecionado); // Ok
     
-    public abstract Arestas insereArcoSemDirecao (Vertices verticeUm, Vertices verticeDois, double valor); // Ok 
+    public abstract Arestas insereAresta(Vertices VerticeUm, Vertices VerticeDois, double valor, boolean ehDirecionado);
+
+    public abstract Arestas insereArcoDirecionado(Vertices VerticeUm, Vertices VerticeDois,
+            double valor); // Ok
+    
+    public abstract Arestas insereArcoNaoDirecionado (Vertices verticeUm, Vertices verticeDois, double valor); // Ok 
 
     public abstract void removeArco(Vertices vert1, Vertices vert2, int chave); // Ok
 
