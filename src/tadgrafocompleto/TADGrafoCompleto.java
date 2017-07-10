@@ -24,9 +24,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         vertices=new ArrayList();
         
     }
-    /**
-     * ATENÇÃO: A CHAVE É A INFORMAÇÃO DO VÉRTICE O VALOR É QUALQUER COISA Q SEI LÁ
-     */
     
     /**
      *
@@ -320,13 +317,13 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     }
     
     public void leitorArquivo(String nome) throws FileNotFoundException, IOException{
-        FileReader arq = new FileReader("/home/adrianny/Documentos/"+nome);
+        FileReader arq = new FileReader("/home/hayhack/Documents/"+nome);
         BufferedReader lerArq = new BufferedReader(arq);
 
 
         String linha = lerArq.readLine(); 
         while (linha != null) {
-            rows ++;
+            rows++;
 //            System.out.printf("%s\n", linha);
             if(columns == 0){
                 columns = linha.length();
@@ -336,7 +333,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         }
         
 //        System.out.printf(rows + " " + columns);
-        FileReader arq2 = new FileReader("/home/adrianny/Documentos/"+nome);
+        FileReader arq2 = new FileReader("/home/hayhack/Documents/"+nome);
         BufferedReader lerArq2 = new BufferedReader(arq2);
         String linhaMatriz = lerArq2.readLine();
         
@@ -370,6 +367,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
                     temp[i][j] = novo;
                     cont++;
                     vertices.add(novo);
+                    inserirVertice(novo);
                 } else {
                     temp[i][j] = null;
                 }
@@ -379,50 +377,75 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         }
         qtdVertices = cont;
         matrizVertices = temp;
+        
     }
     
-    public void gerarGrafo(){
-//        out.println(columns);
-//        out.println(rows);
+    public void gerarGrafoLabirinto(){
+//  Aqui se cria a matriz de adjacência, e informando onde tem as arestas D: fuck i'm stupid
+        
 //        for(int i = 0; i < rows; ++i){
         int i = 0;
         while(i < rows) {
+//            out.println(i);
             for(int j = 0; j < columns; ++j)
             {
-                out.print(matrizVertices[i][j]);
+//                out.print(matrizVertices[i][j]);
 
                 if(matrizVertices[i][j] != null){
-                    if(matrizVertices[i][j-1] != null && j-1 >= 0){
-                        Arestas oeste = new Arestas(matrizVertices[i][j], matrizVertices[i][j-1], 1, false);
-//                        out.println("origem: " + oeste.getVerticeOrigem() + "destino:" + oeste.getVerticeDestino());
+                    
+                    
+                    if ( j == 0 ) {
+//                        return;
+                    } else {
+                        if(matrizVertices[i][j-1] != null && j-1 >= 0){
+//                            Arestas oeste = new Arestas(matrizVertices[i][j], matrizVertices[i][j-1], 1, false);
+                            insereAresta(matrizVertices[i][j], matrizVertices[i][j-1], 1, false);
+//                            out.println("imprimindo os vértices que representam sentido oeste");
+//                            out.println("origem: " + oeste.getVerticeOrigem() + "destino:" + oeste.getVerticeDestino());
+
+                        }     
                     }
+                    
                     
                     if(j == columns-1) {
-                        return;
+//                        return;
                     } else {
                         if(matrizVertices[i][j+1] != null){
-                            Arestas leste = new Arestas(matrizVertices[i][j], matrizVertices[i][j+1], 1, false);
+//                            Arestas leste = new Arestas(matrizVertices[i][j], matrizVertices[i][j+1], 1, false);
+                            insereAresta(matrizVertices[i][j], matrizVertices[i][j+1], 1, false);
+//                            out.println("imprimindo os vértices que representam sentido leste");
+//                            out.println("origem: " + leste.getVerticeOrigem() + "destino:" + leste.getVerticeDestino());
                         }
                     }
                     
-                    if (i == rows-1) {
-                        return;
-                    } else {
+//                    if (i == rows-1) {
+//                        return;
+//                    } else {
                         if(matrizVertices[i-1][j] != null && i-1 >= 0){
-                        Arestas norte = new Arestas(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
-    //                        out.println("origem: " + norte.getVerticeOrigem() + "destino:" + norte.getVerticeDestino());
+//                            Arestas norte = new Arestas(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
+                            insereAresta(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
+//                            out.println("imprimindo os vértices que representam sentido norte");
+//                            out.println("origem: " + norte.getVerticeOrigem() + "destino:" + norte.getVerticeDestino());
                         }
-                    }
+//                    }
                     
                     if(matrizVertices[i+1][j] != null && i+1 <= rows){
-                        Arestas sul = new Arestas(matrizVertices[i][j], matrizVertices[i+1][j], 1, false);
+//                        Arestas sul = new Arestas(matrizVertices[i][j], matrizVertices[i+1][j], 1, false);
+//                        out.println(matrizVertices[i][j]);
+//                        out.println(matrizVertices[i+1][j]);
+                        insereAresta(matrizVertices[i][j], matrizVertices[i+1][j], 1, false);
+//                        out.println("imprimindo os vértices que representam sentido sul");
+//                        out.println("origem: " + sul.getVerticeOrigem() + "destino:" + sul.getVerticeDestino());
                     }
+                    
                 }
             }
-        out.println("");
+//        out.println("");
+        //out.println("Construída a linha " + i + " da matriz!" );
         i++;
         }
     }
+
     
     public static void main(String[] args) throws IOException {
         
@@ -430,9 +453,11 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         TADGrafoCompleto grafo = new TADGrafoCompleto();
         grafo.leitorArquivo("labirinto.dat");
         grafo.gerarMatrizVertices();
-        grafo.gerarGrafo();
+//        grafo.mostraMatriz();
+        grafo.gerarGrafoLabirinto();
+//        out.println(grafo.vertices());
+//        out.println(grafo.ordem());
         
-//        grafo.ehAdjacente(vertices.get(0), vertices.get(1));
         
 //        out.println(grafo.ordem());
         
