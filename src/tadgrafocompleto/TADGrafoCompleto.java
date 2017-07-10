@@ -89,8 +89,16 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     public Arestas insereAresta(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado) {
         Arestas A=new Arestas(verticeUm, verticeDois, valor, ehDirecionado);         
 
-        int ind1=achaIndice(verticeUm.getChave());
-        int ind2=achaIndice(verticeDois.getChave());
+//        int ind1=achaIndice(verticeUm.getChave());
+//        int ind2=achaIndice(verticeDois.getChave());
+        
+//        No caso do labirinto que estamos desenhados, os índices são exatamente representados pelas chaves dos vértices
+
+        int ind1=verticeUm.getChave();
+        int ind2=verticeDois.getChave();
+        
+//        out.println(ind1);
+//        out.println(ind2);
         
         // consulta a arrayList referente ao nó início e fim
         if(matrizAdj[ind1][ind2]!=null){
@@ -371,9 +379,9 @@ public class TADGrafoCompleto extends InterfaceGrafo {
                 } else {
                     temp[i][j] = null;
                 }
-                out.print(temp[i][j]+" ");
+//                out.print(temp[i][j]+" ");
             }
-            out.println("");
+//            out.println("");
         }
         qtdVertices = cont;
         matrizVertices = temp;
@@ -381,9 +389,8 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     }
     
     public void gerarGrafoLabirinto(){
-//  Aqui se cria a matriz de adjacência, e informando onde tem as arestas D: fuck i'm stupid
+//  Aqui se completa a matriz de vértices adjacentes com os valores das arestas, e informando onde tem as arestas D: fuck i'm stupid
         
-//        for(int i = 0; i < rows; ++i){
         int i = 0;
         while(i < rows) {
 //            out.println(i);
@@ -418,21 +425,15 @@ public class TADGrafoCompleto extends InterfaceGrafo {
                         }
                     }
                     
-//                    if (i == rows-1) {
-//                        return;
-//                    } else {
-                        if(matrizVertices[i-1][j] != null && i-1 >= 0){
-//                            Arestas norte = new Arestas(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
-                            insereAresta(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
+                    if(matrizVertices[i-1][j] != null && i-1 >= 0){
+//                        Arestas norte = new Arestas(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
+                        insereAresta(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
 //                            out.println("imprimindo os vértices que representam sentido norte");
 //                            out.println("origem: " + norte.getVerticeOrigem() + "destino:" + norte.getVerticeDestino());
-                        }
-//                    }
+                    }
                     
                     if(matrizVertices[i+1][j] != null && i+1 <= rows){
 //                        Arestas sul = new Arestas(matrizVertices[i][j], matrizVertices[i+1][j], 1, false);
-//                        out.println(matrizVertices[i][j]);
-//                        out.println(matrizVertices[i+1][j]);
                         insereAresta(matrizVertices[i][j], matrizVertices[i+1][j], 1, false);
 //                        out.println("imprimindo os vértices que representam sentido sul");
 //                        out.println("origem: " + sul.getVerticeOrigem() + "destino:" + sul.getVerticeDestino());
@@ -453,13 +454,13 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         TADGrafoCompleto grafo = new TADGrafoCompleto();
         grafo.leitorArquivo("labirinto.dat");
         grafo.gerarMatrizVertices();
-//        grafo.mostraMatriz();
         grafo.gerarGrafoLabirinto();
+        grafo.mostraMatriz();
+
 //        out.println(grafo.vertices());
 //        out.println(grafo.ordem());
         
         
-//        out.println(grafo.ordem());
         
     }
   
