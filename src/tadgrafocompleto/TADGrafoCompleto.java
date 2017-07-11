@@ -19,6 +19,9 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     private static ArrayList<Vertices> vertices;
     private static Vertices matrizVertices[][] = null;
     public ArrayList<Arestas> matrizAdj[][] = null;
+    
+
+    
     public TADGrafoCompleto(){
         qtdVertices=0;
         vertices=new ArrayList();
@@ -276,8 +279,10 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      */
     @Override
     public boolean ehAdjacente(Vertices v, Vertices w){
-        int ind1=achaIndice(v.getChave());
-        int ind2=achaIndice(w.getChave());
+//        int ind1=achaIndice(v.getChave());
+//        int ind2=achaIndice(w.getChave());
+        int ind1= (v.getChave());
+        int ind2= (w.getChave());
         return (matrizAdj[ind1][ind2])!= null;
 //        return(matrizVertices[][])
         
@@ -302,6 +307,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         }
         
     }
+   
     
     public boolean verificarCaminhoEuleriano(){
         int tam = qtdVertices, cont = 0, impares = 0;
@@ -324,6 +330,60 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         }
     }
     
+    public Arestas getAresta(Vertices v, Vertices w){
+        int ind1=(v.getChave());
+        int ind2=(w.getChave());
+
+        if (matrizAdj[ind1][ind2] == null) {
+            return null;
+        } else {
+            return matrizAdj[ind1][ind2].get(0);
+        }
+        
+         
+    }
+    
+    public void algoritmoDijkstra(Vertices inicio, ArrayList<Vertices> destino) {
+//        ArrayList<Vertices> visitados = new ArrayList<>();
+        ArrayList<Vertices> naovisitados = vertices;
+        ArrayList<Vertices> custo = new ArrayList<>();
+        ArrayList<Vertices> antecessor = new ArrayList<>();
+        
+        naovisitados.remove(inicio.getChave()); // Reconhecendo posição inicial e removendo dos arraylist de vértices não visitados
+        
+        for (Vertices v : naovisitados) {
+            if ( ehAdjacente(inicio, v) == true) {
+                getAresta(inicio, v);
+                out.println(getAresta(inicio, v));
+            }
+            
+        }
+        
+        
+        
+
+        
+    }
+    
+    public void resolverLabirinto() {
+        Vertices tempInicio = null;
+        ArrayList<Vertices> tempFim = new ArrayList<>();
+        for (Vertices v : this.vertices) {
+            if (v.getValor() == 2.0) {
+                tempInicio = v;
+                out.println(tempInicio);
+                
+            }
+            else if (v.getValor() == 3.0) {
+                tempFim.add(v);
+                out.println(tempFim);
+            }
+        }
+        
+        algoritmoDijkstra(tempInicio, tempFim);
+        
+    }
+    
     public void leitorArquivo(String nome) throws FileNotFoundException, IOException{
         FileReader arq = new FileReader("/home/hayhack/Documents/"+nome);
         BufferedReader lerArq = new BufferedReader(arq);
@@ -340,7 +400,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
             linha = lerArq.readLine(); // lê da segunda até a última linha
         }
         
-//        System.out.printf(rows + " " + columns);
         FileReader arq2 = new FileReader("/home/hayhack/Documents/"+nome);
         BufferedReader lerArq2 = new BufferedReader(arq2);
         String linhaMatriz = lerArq2.readLine();
@@ -374,7 +433,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
                     novo = new Vertices(cont, matriz[i][j]);
                     temp[i][j] = novo;
                     cont++;
-                    vertices.add(novo);
                     inserirVertice(novo);
                 } else {
                     temp[i][j] = null;
@@ -455,8 +513,11 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         grafo.leitorArquivo("labirinto.dat");
         grafo.gerarMatrizVertices();
         grafo.gerarGrafoLabirinto();
-        grafo.mostraMatriz();
-
+//        grafo.mostraMatriz();
+//        out.println(grafo.vertices());
+        
+        grafo.resolverLabirinto();
+        
 //        out.println(grafo.vertices());
 //        out.println(grafo.ordem());
         

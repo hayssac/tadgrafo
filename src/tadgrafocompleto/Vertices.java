@@ -7,6 +7,7 @@ package tadgrafocompleto;
 public class Vertices extends InterfaceVertices {
     private int chave;
     private double valor;
+    private int marcado;
     /**
      * @param chave
      * @param valor
@@ -44,7 +45,14 @@ public class Vertices extends InterfaceVertices {
     public void setValor(double valor) {
         this.valor = valor;
     }
-    
+    public int getMarcado() {
+        return marcado;
+    }
+
+    public void setMarcado(int marcado) {
+        this.marcado = marcado;
+    }
+     
     @Override
     public String toString(){        
         //return "["+chave+" - "+valor+"]";
