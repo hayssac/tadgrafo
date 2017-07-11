@@ -19,9 +19,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     private static ArrayList<Vertices> vertices;
     private static Vertices matrizVertices[][] = null;
     public ArrayList<Arestas> matrizAdj[][] = null;
-    
-
-    
+        
     public TADGrafoCompleto(){
         qtdVertices=0;
         vertices=new ArrayList();
@@ -330,6 +328,13 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         }
     }
     
+    
+    
+    
+    
+    
+    // Esses métodos são para resolução do labirinto
+    
     public Arestas getAresta(Vertices v, Vertices w){
         int ind1=(v.getChave());
         int ind2=(w.getChave());
@@ -338,49 +343,90 @@ public class TADGrafoCompleto extends InterfaceGrafo {
             return null;
         } else {
             return matrizAdj[ind1][ind2].get(0);
-        }
-        
-         
+        } 
     }
     
-    public void algoritmoDijkstra(Vertices inicio, ArrayList<Vertices> destino) {
-//        ArrayList<Vertices> visitados = new ArrayList<>();
+    public Map<Vertices, Vertices> algoritmoDijkstra(Vertices inicio, ArrayList<Vertices> destino) {
         ArrayList<Vertices> naovisitados = vertices;
-        ArrayList<Vertices> custo = new ArrayList<>();
-        ArrayList<Vertices> antecessor = new ArrayList<>();
+//        ArrayList<Vertices> visitados = new ArrayList<>();
+
+        Map<Vertices, Double> D = new HashMap<>();
+        Map<Vertices, Vertices> antecessor = new HashMap<>();
         
-        naovisitados.remove(inicio.getChave()); // Reconhecendo posição inicial e removendo dos arraylist de vértices não visitados
+        naovisitados.remove(inicio); // Reconhecendo posição inicial e removendo dos arraylist de vértices não visitados
+//        visitados.add(inicio);
+        
+        D.put(inicio, 0.0);
         
         for (Vertices v : naovisitados) {
             if ( ehAdjacente(inicio, v) == true) {
-                getAresta(inicio, v);
-                out.println(getAresta(inicio, v));
+                D.put(v, getAresta(inicio, v).getValor());
+            } else {
+                D.put(v, Double.POSITIVE_INFINITY);
             }
-            
         }
         
+//        out.println(naovisitados);
+//        out.println(visitados);
         
-        
-
-        
+//        out.println(D);
+//  
+        while(!naovisitados.isEmpty()) {
+            Vertices w = verticeMenorCusto(naovisitados, D);
+            
+//            out.println(w);
+            naovisitados.remove(w);
+            for (Vertices v : naovisitados) {
+                
+                Double custoAnterior = Double.POSITIVE_INFINITY;
+                if ( ehAdjacente(w, v) == true) {
+                   custoAnterior = getAresta(w, v).getValor();
+                }
+                
+                
+                if ((D.get(w) + custoAnterior) < D.get(v)) {
+                    antecessor.put(v, w);
+                }
+                D.put(v, Math.min(D.get(v), D.get(w) + custoAnterior));
+                if (destino.contains(w)) {
+                    return antecessor;
+                }
+            }
+                
+        }    
+        return null;
     }
     
+    
+    private Vertices verticeMenorCusto(ArrayList<Vertices> naovisitados, Map<Vertices, Double> D) {
+        Double menorValor = Double.POSITIVE_INFINITY;
+        Vertices verticeEncontrado = null;
+        
+        for (Vertices v : naovisitados) {
+            if(D.get(v) < menorValor) {
+                menorValor = D.get(v);
+                verticeEncontrado = v;
+            }
+        }
+        return verticeEncontrado;
+    }
+   
     public void resolverLabirinto() {
         Vertices tempInicio = null;
         ArrayList<Vertices> tempFim = new ArrayList<>();
         for (Vertices v : this.vertices) {
             if (v.getValor() == 2.0) {
                 tempInicio = v;
-                out.println(tempInicio);
+//                out.println(tempInicio);
                 
             }
             else if (v.getValor() == 3.0) {
                 tempFim.add(v);
-                out.println(tempFim);
+//                out.println(tempFim);
             }
         }
         
-        algoritmoDijkstra(tempInicio, tempFim);
+        out.println(algoritmoDijkstra(tempInicio, tempFim));
         
     }
     
@@ -437,9 +483,9 @@ public class TADGrafoCompleto extends InterfaceGrafo {
                 } else {
                     temp[i][j] = null;
                 }
-//                out.print(temp[i][j]+" ");
+                out.print(temp[i][j]+" ");
             }
-//            out.println("");
+            out.println("");
         }
         qtdVertices = cont;
         matrizVertices = temp;
