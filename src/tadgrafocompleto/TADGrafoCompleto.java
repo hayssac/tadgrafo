@@ -346,7 +346,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         } 
     }
     
-    public Map<Vertices, Vertices> algoritmoDijkstra(Vertices inicio, ArrayList<Vertices> destino) {
+    public ArrayList<Vertices> algoritmoDijkstra(Vertices inicio, ArrayList<Vertices> destino) {
         ArrayList<Vertices> naovisitados = vertices;
 //        ArrayList<Vertices> visitados = new ArrayList<>();
 
@@ -354,12 +354,13 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         Map<Vertices, Vertices> antecessor = new HashMap<>();
         
         naovisitados.remove(inicio); // Reconhecendo posição inicial e removendo dos arraylist de vértices não visitados
-//        visitados.add(inicio);
+        
+//        out.println(inicio);
         
         D.put(inicio, 0.0);
         
         for (Vertices v : naovisitados) {
-            if ( ehAdjacente(inicio, v) == true) {
+            if (ehAdjacente(inicio, v) == true) {
                 D.put(v, getAresta(inicio, v).getValor());
             } else {
                 D.put(v, Double.POSITIVE_INFINITY);
@@ -367,10 +368,8 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         }
         
 //        out.println(naovisitados);
-//        out.println(visitados);
         
 //        out.println(D);
-//  
         while(!naovisitados.isEmpty()) {
             Vertices w = verticeMenorCusto(naovisitados, D);
             
@@ -379,7 +378,7 @@ public class TADGrafoCompleto extends InterfaceGrafo {
             for (Vertices v : naovisitados) {
                 
                 Double custoAnterior = Double.POSITIVE_INFINITY;
-                if ( ehAdjacente(w, v) == true) {
+                if (ehAdjacente(w, v) == true) {
                    custoAnterior = getAresta(w, v).getValor();
                 }
                 
@@ -389,14 +388,32 @@ public class TADGrafoCompleto extends InterfaceGrafo {
                 }
                 D.put(v, Math.min(D.get(v), D.get(w) + custoAnterior));
                 if (destino.contains(w)) {
-                    return antecessor;
+                    //Mais de um destino, portanto, a gente com certeza pega o destino mais próximo
+                    out.println("k3k");
+                    return organizarCaminho(antecessor, w, inicio);
                 }
             }
-                
-        }    
-        return null;
+        }
+//        out.println(antecessor);
+        // Aqui, a gente tem garantia que só existe UM destino
+        return organizarCaminho(antecessor, destino.get(0), inicio);
+
     }
     
+    private ArrayList<Vertices> organizarCaminho(Map<Vertices, Vertices> antecessor, Vertices w, Vertices inicio) {
+        ArrayList<Vertices> caminho = new ArrayList<>();
+        
+        while( w != null  ) {
+            caminho.add(w);            
+            Vertices anterior = antecessor.remove(w);
+//            out.println(w);
+            w = anterior;
+            
+        }
+        caminho.add(inicio);        
+        Collections.reverse(caminho);
+        return caminho;
+    }
     
     private Vertices verticeMenorCusto(ArrayList<Vertices> naovisitados, Map<Vertices, Double> D) {
         Double menorValor = Double.POSITIVE_INFINITY;
@@ -483,9 +500,9 @@ public class TADGrafoCompleto extends InterfaceGrafo {
                 } else {
                     temp[i][j] = null;
                 }
-                out.print(temp[i][j]+" ");
+//                out.print(temp[i][j]+" ");
             }
-            out.println("");
+//            out.println("");
         }
         qtdVertices = cont;
         matrizVertices = temp;
@@ -509,7 +526,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
 //                        return;
                     } else {
                         if(matrizVertices[i][j-1] != null && j-1 >= 0){
-//                            Arestas oeste = new Arestas(matrizVertices[i][j], matrizVertices[i][j-1], 1, false);
                             insereAresta(matrizVertices[i][j], matrizVertices[i][j-1], 1, false);
 //                            out.println("imprimindo os vértices que representam sentido oeste");
 //                            out.println("origem: " + oeste.getVerticeOrigem() + "destino:" + oeste.getVerticeDestino());
@@ -522,7 +538,6 @@ public class TADGrafoCompleto extends InterfaceGrafo {
 //                        return;
                     } else {
                         if(matrizVertices[i][j+1] != null){
-//                            Arestas leste = new Arestas(matrizVertices[i][j], matrizVertices[i][j+1], 1, false);
                             insereAresta(matrizVertices[i][j], matrizVertices[i][j+1], 1, false);
 //                            out.println("imprimindo os vértices que representam sentido leste");
 //                            out.println("origem: " + leste.getVerticeOrigem() + "destino:" + leste.getVerticeDestino());
@@ -530,14 +545,12 @@ public class TADGrafoCompleto extends InterfaceGrafo {
                     }
                     
                     if(matrizVertices[i-1][j] != null && i-1 >= 0){
-//                        Arestas norte = new Arestas(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
                         insereAresta(matrizVertices[i][j], matrizVertices[i-1][j], 1, false);
 //                            out.println("imprimindo os vértices que representam sentido norte");
 //                            out.println("origem: " + norte.getVerticeOrigem() + "destino:" + norte.getVerticeDestino());
                     }
                     
                     if(matrizVertices[i+1][j] != null && i+1 <= rows){
-//                        Arestas sul = new Arestas(matrizVertices[i][j], matrizVertices[i+1][j], 1, false);
                         insereAresta(matrizVertices[i][j], matrizVertices[i+1][j], 1, false);
 //                        out.println("imprimindo os vértices que representam sentido sul");
 //                        out.println("origem: " + sul.getVerticeOrigem() + "destino:" + sul.getVerticeDestino());
@@ -557,18 +570,13 @@ public class TADGrafoCompleto extends InterfaceGrafo {
         
         TADGrafoCompleto grafo = new TADGrafoCompleto();
         grafo.leitorArquivo("labirinto.dat");
+//        grafo.leitorArquivo("labirinto2.dat");
         grafo.gerarMatrizVertices();
-        grafo.gerarGrafoLabirinto();
+        grafo.gerarGrafoLabirinto();       
 //        grafo.mostraMatriz();
-//        out.println(grafo.vertices());
-        
         grafo.resolverLabirinto();
         
-//        out.println(grafo.vertices());
-//        out.println(grafo.ordem());
-        
-        
-        
+       
     }
   
     
