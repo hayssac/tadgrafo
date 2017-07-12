@@ -90,17 +90,17 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     public Arestas insereAresta(Vertices verticeUm, Vertices verticeDois, double valor, boolean ehDirecionado) {
         Arestas A=new Arestas(verticeUm, verticeDois, valor, ehDirecionado);         
 
-//        int ind1=achaIndice(verticeUm.getChave());
-//        int ind2=achaIndice(verticeDois.getChave());
+        int ind1=achaIndice(verticeUm.getChave());
+        int ind2=achaIndice(verticeDois.getChave());
         
 //        No caso do labirinto que estamos desenhados, os índices são exatamente representados pelas chaves dos vértices
 
-        int ind1=verticeUm.getChave();
-        int ind2=verticeDois.getChave();
+//        int ind1=verticeUm.getChave();
+//        int ind2=verticeDois.getChave();
         
 //        out.println(ind1);
 //        out.println(ind2);
-        
+//        
         // consulta a arrayList referente ao nó início e fim
         if(matrizAdj[ind1][ind2]!=null){
             matrizAdj[ind1][ind2].add(A);
@@ -277,10 +277,12 @@ public class TADGrafoCompleto extends InterfaceGrafo {
      */
     @Override
     public boolean ehAdjacente(Vertices v, Vertices w){
-//        int ind1=achaIndice(v.getChave());
-//        int ind2=achaIndice(w.getChave());
-        int ind1= (v.getChave());
-        int ind2= (w.getChave());
+                
+        int ind1=achaIndice(v.getChave());
+        int ind2=achaIndice(w.getChave());
+        
+//        int ind1= (v.getChave());
+//        int ind2= (w.getChave());
         return (matrizAdj[ind1][ind2])!= null;
 //        return(matrizVertices[][])
         
@@ -336,8 +338,11 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     // Esses métodos são para resolução do labirinto
     
     public Arestas getAresta(Vertices v, Vertices w){
-        int ind1=(v.getChave());
-        int ind2=(w.getChave());
+//        int ind1=(v.getChave());
+//        int ind2=(w.getChave());
+
+        int ind1=(achaIndice(v.getChave()));
+        int ind2=(achaIndice(w.getChave()));
 
         if (matrizAdj[ind1][ind2] == null) {
             return null;
@@ -347,18 +352,21 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     }
     
     public ArrayList<Vertices> algoritmoDijkstra(Vertices inicio, ArrayList<Vertices> destino) {
-        ArrayList<Vertices> naovisitados = vertices;
-//        ArrayList<Vertices> visitados = new ArrayList<>();
+        ArrayList<Vertices> naovisitados = new ArrayList<>();
+        
+        for (Vertices v : vertices) {
+            naovisitados.add(v);
+        }
+          
 
         Map<Vertices, Double> D = new HashMap<>();
         Map<Vertices, Vertices> antecessor = new HashMap<>();
         
         naovisitados.remove(inicio); // Reconhecendo posição inicial e removendo dos arraylist de vértices não visitados
         
-//        out.println(inicio);
         
         D.put(inicio, 0.0);
-        
+
         for (Vertices v : naovisitados) {
             if (ehAdjacente(inicio, v) == true) {
                 D.put(v, getAresta(inicio, v).getValor());
@@ -367,13 +375,14 @@ public class TADGrafoCompleto extends InterfaceGrafo {
             }
         }
         
-//        out.println(naovisitados);
         
+//        out.println(naovisitados);
+//
 //        out.println(D);
         while(!naovisitados.isEmpty()) {
             Vertices w = verticeMenorCusto(naovisitados, D);
             
-//            out.println(w);
+            out.println(w);
             naovisitados.remove(w);
             for (Vertices v : naovisitados) {
                 
@@ -568,14 +577,98 @@ public class TADGrafoCompleto extends InterfaceGrafo {
     public static void main(String[] args) throws IOException {
         
         
+//  Do Labirinto
+
         TADGrafoCompleto grafo = new TADGrafoCompleto();
+        
+      
+        
         grafo.leitorArquivo("labirinto.dat");
 //        grafo.leitorArquivo("labirinto2.dat");
         grafo.gerarMatrizVertices();
         grafo.gerarGrafoLabirinto();       
-//        grafo.mostraMatriz();
+        grafo.mostraMatriz();
         grafo.resolverLabirinto();
+
         
+
+// Com um grafo qualquer sem ser o labirinto
+        
+//        Vertices a = new Vertices(55, 0);
+//        Vertices b = new Vertices(44, 0);
+//        Vertices c = new Vertices(33, 0);
+//        Vertices d = new Vertices(22, 0);
+        
+//        TADGrafoCompleto grafo = new TADGrafoCompleto();
+////        
+//        grafo.inserirVertice(a);
+//        grafo.inserirVertice(b);
+//        grafo.inserirVertice(c);
+//        grafo.inserirVertice(d);
+//        
+        
+//        System.out.println(grafo.vertices());   
+//        grafo.mostraVertices();
+//        System.out.println(grafo.ordem());
+//        System.out.println(grafo.achaIndice(a.getChave()));
+//        System.out.println(grafo.achaIndice(b.getChave()));
+//        System.out.println(grafo.achaIndice(c.getChave()));
+//        System.out.println(grafo.achaIndice(d.getChave()));
+//        System.out.println(grafo.achaIndice(e.getChave()));
+//        
+//        
+//        grafo.insereArcoDirecionado(a, b, 500);
+//        grafo.insereArcoNaoDirecionado(b, c, 200);
+//        grafo.insereArcoDirecionado(c, a, 7);
+//        grafo.insereArcoDirecionado(b, d, 27);
+//        
+//        grafo.insereArcoDirecionado(c, e, 200, true);
+//        grafo.insereArcoNaoDirecionado(e, a, 12);
+//        grafo.insereArcoNaoDirecionado(e, a, 14);
+//        grafo.insereArcoNaoDirecionado(b, e, 14);
+//        grafo.insereArcoNaoDirecionado(a, c, 14);
+        
+//        grafo.insereAresta(a, b, 500, true);
+//        grafo.insereAresta(a, b, 200, true);
+//        grafo.insereAresta(a, b, 76, true);
+//        grafo.removeArco(a,b,500);
+//        grafo.insereArcoNaoDirecionado(b, c, 200);
+//        grafo.insereAresta(c, a, 7, true);
+//        grafo.insereAresta(b, d, 27, true);
+//        grafo.insereArco(c, e, 200, true);
+//        grafo.insereArco(e, a, 12, false);
+//        grafo.insereArco(e, a, 14, false);
+//        grafo.insereArco(b, e, 14, false);
+//        grafo.insereAresta(a, c, 14, false);
+//        grafo.insereArcoDirecionado(a, b, 500);
+//        grafo.insereArcoNaoDirecionado(b, c, 200);
+//        grafo.insereArcoDirecionado(c, a, 7);
+//        grafo.insereArcoDirecionado(b, d, 27);
+//        grafo.insereArcoDirecionado(c, e, 200, true);
+//        grafo.insereArcoNaoDirecionado(e, a, 12);
+//        grafo.insereArcoNaoDirecionado(e, a, 14);
+//        grafo.insereArcoNaoDirecionado(b, e, 14);
+//        grafo.insereArcoNaoDirecionado(a, c, 14);
+//        grafo.removerVertice(e);
+//        grafo.removeArco(a,b,200);
+//        out.println(grafo.grau(e));
+//        grafo.arestasIncidentes(e);
+//        grafo.arestas();
+//        out.println(grafo.finalVertices(grafo.getAresta(a, b, 500)));
+//        out.println(grafo.ehAdjacente(a, c));
+
+        
+
+//        System.out.println(grafo.arestas());
+//        grafo.verificarCaminhoEuleriano();
+
+//        grafo.mostraMatriz();
+//        
+//        ArrayList<Vertices> fim = new ArrayList<>();
+//        fim.add(d);
+//        
+//        out.println(grafo.algoritmoDijkstra(a, fim));
+
        
     }
   
